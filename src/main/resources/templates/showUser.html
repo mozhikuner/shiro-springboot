@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Insert title here</title>
+<link rel="stylesheet" href="/js/easyui/themes/icon.css"/>
+<link rel="stylesheet" href="/js/easyui/themes/default/easyui.css"/>
+<link rel="stylesheet" href="/js/easyui/themes/color.css"/>
+<script src="/js/easyui/jquery.min.js"></script>
+<script src="/js/easyui/jquery.easyui.min.js"></script>
+<script src="/js/easyui/locale/easyui-lang-zh_CN.js"></script>
+</head>
+<body>
+<div id="tool">
+	
+		<a shiro:hasPermission="user:edit" id="btn-search" href="javascript:updateMkUser()" class="easyui-linkbutton" data-options="iconCls:'icon-edit'">修改</a>
+		<a shiro:hasPermission="user:add" href="javascript:addMkUser()" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">新增</a>
+		<a shiro:hasPermission="user:delete" href="javascript:deleteMkUser()" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">删除</a>
+		<a shiro:hasPermission="nav:export" href="javascript:exportMkUser()" class="easyui-linkbutton" data-options="iconCls:'icon-redo',plain:true">导出</a>
+	</div>
+<table id="showBook" ></table>
+<div id="dd-dialog"></div>  
+<script type="text/javascript">
+/* <![CDATA[ */
+$(function(){
+	  searchPage();
+})
+
+function deleteMkUser(){
+	//var arr = $("#showBook").datagrid("getSelections");
+	var ids ='';
+    $($("#showBook").datagrid("getSelections")).each(function(V,I) {
+        ids = ids + "," + "'" +
+			""+this.id+" '";
+    });
+    ids=ids.substr(1);
+	$.post('/user/deleteUserInfo.do',{"ids":ids},function(){
+		alert("删除成功");
+		searchPage();
+	})
+}
+
+ function updateMkUser(){
+  var arr = $("#showBook").datagrid("getSelected");
+  console.log(arr)
+	var id = arr.id;
+	$('#dd-dialog').dialog({    
+	    title: '修改',    
+	    width: 600,    
+	    height: 400,    
+	    closed: false,    
+	    cache: false,    
+	    href: "/user/updateQueryMkUser.do?id="+id,    
+	    modal: true,
+	    buttons:[{
+			text:'保存',
+			handler:function(){
+				$.ajax({
+					url:"/user/updateMkUser.do",
+					data:$("#updateUserForm").serialize(),
+					type:"post",
+					success:function(){
+						$('#dd-dialog').dialog('close');
+						 searchPage();
+					}
+				}) 
+			}
+		},{
+			text:'关闭',
+			handler:function(){
+				$('#dd-dialog').dialog('close')
+			}
+		}]
+	})
+}
+
+function searchPage(){
+	 $('#showBook').datagrid({
+		    url:'/user/queryMkUser',  /* 请求路径 */
+		    fit:true,
+		    toolbar:'#tool',
+		    //singleSelect:true,/* 只允许选择一行 */
+		    checkOnSelect:false,/* 操作复选框是不操作行 */ 
+		    selectOnCheck:true,/* 操作行时，不操作复选框 */
+		    pagination:true,/* 为true时，在底部显示分页工具栏 */ 
+		    pageNumber:1,/* 当前页数 */ 
+		    pageSize:3,/* 每页条数 */ 
+		    pageList:[3,5,8],/* 下拉 选择 每页条数 第一个数需和每页条数一致 */ 
+	        queryParams: {/*  条件查询  方法  */
+	        	/* bookName: $("#searchame").val(),
+	        	bookType:$("#selectid").val(), 
+	        	bookDatestr: $("#starttime").val(),
+	        	bookDateend: $("#endtime").val()   */
+		   }, 
+		    columns:[[ //展现列数据   
+                {field:'check',checkbox:true},
+		        {field:'id',title:'id',width:100,align:'center' },    
+		        {field:'name',title:'名称',width:100,align:'center'}, 
+		        {field:'username',title:'账户',width:100,align:'center'},
+		        {field:'password',title:'密码',width:100,align:'center'},    
+		        {field:'roleId',title:'角色',width:200,align:'center'}    
+		    ]],
+		});
+}
+function addMkUser(){
+	$('#dd-dialog').dialog({    
+	    title: '新增',    
+	    width: 600,    
+	    height: 400,    
+	    closed: false,    
+	    cache: false,    
+	    href: '/user/toAddMkUser.do',    
+	    modal: true,
+	    buttons:[{
+			text:'保存',
+			handler:function(){
+				$.ajax({
+					url:"/user/addMkUserInfo.do",
+					data:$("#addUserForm").serialize(),
+					type:"post",
+					success:function(){
+						$('#dd-dialog').dialog('close');
+						 searchPage();
+					}
+				}) 
+			}
+		},{
+			text:'关闭',
+			handler:function(){
+				$('#dd-dialog').dialog('close')
+			}
+		}]
+	})
+}
+function exportMkUser(){
+	location.href="/user/exceprtExcelMkUser.do";
+}
+
+
+/* ]]> */
+</script>
+</body>
+</html>

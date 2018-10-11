@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Insert title here</title>
+<link rel="stylesheet" href="/js/easyui/themes/icon.css"/>
+<link rel="stylesheet" href="/js/easyui/themes/default/easyui.css"/>
+<link rel="stylesheet" href="/js/easyui/themes/color.css"/>
+<script src="/js/easyui/jquery.min.js"></script>
+<script src="/js/easyui/jquery.easyui.min.js"></script>
+<script src="/js/easyui/locale/easyui-lang-zh_CN.js"></script>
+</head>
+<body>
+	<form id="updateUserForm" method="post">
+	<input name="id" type="hidden" th:value="${User.id}"/> 
+		<table align="center">
+			<tr>
+				<td>姓名</td>
+				<td>
+					<input name="name" class="easyui-textbox" style="width:150px" th:value="${User.name}"/> 
+				</td>
+			</tr>
+			<tr>
+				<td>账号</td>
+				<td>
+					<input name="username" class="easyui-textbox" style="width:150px" th:value="${User.username}"/>
+				</td>
+			</tr>
+			<tr>
+				<td>密码</td>
+				<td>
+					<input name="password" class="easyui-textbox" style="width:150px" th:value="${User.password}"/> 
+				</td>
+			</tr>
+			 <tr>
+				<td>角色</td>
+				<td>
+					<select id="combo" class="easyui-combobox" name="roleId" data-options="multiple:true" style="width:150px">
+						    <option th:each="r:${role}" th:value="${r.id}" th:text="${r.text}"></option>
+					</select>  
+				</td>
+			</tr> 
+			
+		</table>
+	</form>
+	
+</body>
+</html>

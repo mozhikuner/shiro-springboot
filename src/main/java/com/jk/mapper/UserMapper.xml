@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jk.mapper.UserMapper">
+    <!--添加用户角色表信息-->
+<insert id="addUserRoleInfo" parameterType="list">
+    insert into t_user_role(id,user_id,role_id) values
+    <foreach collection="list" item="item" index="index" separator=",">
+        (#{item.id},#{item.user_id},#{item.role_id})
+    </foreach>
+</insert>
+</mapper>
